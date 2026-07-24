@@ -1,0 +1,23 @@
+# card.yaml — フレンチシーン(FS)カードの雛形
+# シド・フィールドのインデックスカード方式。カード1枚 = FS 1個。
+# 骨格点(opening / plot_point_1 / midpoint / plot_point_2 / climax)を含むFSは
+# goal / conflict / outcome が必須。それ以外は beat 1行だけでも良い。
+
+- fs: ""                # 例: "1-2"(景番号-FS番号)
+  on_stage: []          # このFSで舞台上に居る全員
+  enters: []            # このFSの頭で登場する人物
+  exits: []             # 前FSの終わりで退場した人物
+  duration_min: 0       # 想定上演時間(分)。1分 ≒ 320字
+  beat: ""              # このFSで起きることを1行で
+
+  # ↓ 骨格点を含むFSのみ必須(他のFSでも書けるなら書いたほうが強い)
+  # goal: ""            # このFSが物語上で達成すべきこと
+  # conflict: ""        # 誰と誰(何)が、何を巡って対立するか
+  # outcome: ""         # FSの終わりに状況がどう変わるか
+
+  # ↓ 任意フィールド
+  # setup: []           # このFSで張る伏線タグ
+  # payoff: []          # このFSで回収する伏線タグ
+  # props: []           # 必要な小道具
+  # monologue: true     # 長ぜりふ警告(400字超)を抑制
+  # time_jump: true     # 出入りなしの区切り(時間経過/照明転換)を許可

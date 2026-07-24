@@ -1,0 +1,158 @@
+# structure.yaml — 戯曲プロットの骨格ファイル
+# シド・フィールドのパラダイムを 60 分上演に写像した構造。
+# 執筆順: climax → opening → plot_point_1 / plot_point_2 → midpoint → 残りのカード
+# 「カード 1 枚 = フレンチシーン(FS) 1 個」。全体で 8〜12 FS が目安。
+
+title: (作品タイトル)
+target_minutes: 60          # 上演目標時間(分)
+chars_per_minute: 320       # 1分あたりの想定文字数(せりふ主体の相場: 300〜350)
+
+# --- 登場人物(キャラシートは characters/ 以下に別ファイル) ---
+characters: [ハルカ, ミナト, 叔父]
+# voices: [キャスター, 留守電]   # 声のみの出演(on_stage に数えない。ラジオ・電話・場内アナウンス等)
+# FSの任意フィールド flashback: true で回想(入れ子の場)を宣言できる。
+# 回想FSは出入り台帳の連続性チェックから除外される
+
+# --- パラダイム骨格点 ---
+# decided: false のまま次の工程に進むと lint が止める。
+# fs: どのフレンチシーンに割り当てたか(未割当なら null のまま)
+paradigm:
+  climax:                   # ★最初に決める
+    decided: true
+    fs: "3-2"
+    summary: ハルカが手紙を燃やし、ミナトと初めて本音で対峙する
+  opening:                  # ★2番目。クライマックスと「対」になる開始点
+    decided: true
+    fs: "1-1"
+    summary: 葬式帰りの姉弟、居間。互いに目を合わせない
+  plot_point_1:             # 第一幕の蝶番(累積 12〜17 分の位置が目安)
+    decided: true
+    fs: "1-3"
+    summary: 叔父がミナトだけに父の借金を明かす
+  plot_point_2:             # 第二幕の蝶番(累積 40〜47 分の位置が目安)
+    decided: true
+    fs: "2-4"
+    summary: 手紙の宛先が母ではなかったと判明する
+  midpoint:                 # 累積 27〜33 分の位置が目安
+    decided: true
+    fs: "2-2"
+    summary: 家の売却に姉弟が一度は合意してしまう
+
+# --- 景(act) = 物理的な舞台転換の単位。1〜3 が基本、10 以上はエラー ---
+# 景には time_layer: 現在|過去(任意ラベル)を付けられる。同一の場所を時制で切り替える
+# カットバック構造(映像編集的な現在/過去の交互切替)では、location にゾーン、time_layer に
+# 時制を分離して書く。兼ね役は casting: {俳優名: [役名, ...]} で宣言すると、台本側で
+# 俳優名を話者にできる(6人で20役のような座組の記譜)。
+# 常設多重セット(複数の場所を舞台上に同時に建て込み、照明でゾーンを切り替える)の場合は
+# stage_zones: [公園, スーパー, 家A, 家B] を宣言する。景の数の制約はゾーン数(6以上で警告)に
+# 適用され、見出し(切替)の数は無制限になる。切替コストがゼロになる代わりに、
+# 各ゾーンは劇全体を通して舞台上に存在し続けることに注意
+acts:
+  - act: 1
+    location: 実家の居間
+    time: 通夜の晩
+    transition: 幕開き       # 幕開き / 暗転 / 場転 / 明転のまま
+    french_scenes:
+      # FS = 登場人物の出入りで区切る単位。
+      # 検算則: 前FSの on_stage + enters - exits == このFSの on_stage
+      - fs: "1-1"
+        on_stage: [ハルカ, ミナト]
+        enters: []           # 幕開きから居る場合は空で良い(景の先頭FSのみ)
+        exits: []
+        duration_min: 5
+        beat: 遺品整理を始めるが会話が続かない
+        # 骨格点を含むFSは goal / conflict / outcome が必須
+        goal: 姉弟の断絶と「父の不在」を観客に提示する
+        conflict: ハルカは早く済ませたい、ミナトは触られたくない
+        outcome: 段ボールの中から手紙の束が覗く(setup)
+        setup: [父の手紙]
+        payoff: []
+      - fs: "1-2"
+        on_stage: [ハルカ, ミナト, 叔父]
+        enters: [叔父]
+        exits: []
+        duration_min: 6
+        beat: 叔父が家の売却話を切り出す
+        setup: [家の売却]
+        payoff: []
+      - fs: "1-3"
+        on_stage: [ミナト, 叔父]
+        enters: []
+        exits: [ハルカ]      # ハルカ、手紙を持って退場
+        duration_min: 5
+        beat: 叔父がミナトだけに父の借金を明かす
+        goal: ミナトに秘密を背負わせ、第二幕の嘘を駆動する
+        conflict: 叔父は売却に誘導したい、ミナトは姉に知られたくない
+        outcome: ミナトは沈黙を選ぶ(= PP1)
+        setup: [父の借金]
+        payoff: []
+
+  - act: 2
+    location: 同・居間
+    time: 翌朝
+    transition: 暗転
+    french_scenes:
+      - fs: "2-1"
+        on_stage: [ハルカ]
+        enters: [ハルカ]
+        exits: []
+        duration_min: 3
+        beat: ハルカ、一人で手紙を読み始める
+        monologue: true      # 400字超の長ぜりふ警告を抑制
+      - fs: "2-2"
+        on_stage: [ハルカ, ミナト]
+        enters: [ミナト]
+        exits: []
+        duration_min: 9
+        beat: 売却合意。だが手紙の話題で空気が変わる
+        goal: 偽りの解決(ミッドポイント)を成立させる
+        conflict: 表面上の和解 vs 双方の隠し事
+        outcome: 合意はするが、手紙の宛先に疑問が生じる
+      - fs: "2-3"
+        on_stage: [ハルカ, ミナト, 叔父]
+        enters: [叔父]
+        exits: []
+        duration_min: 8
+        beat: 叔父が契約書を持って再訪、借金がハルカに露見しかける
+        payoff: [家の売却]
+      - fs: "2-4"
+        on_stage: [ハルカ, ミナト]
+        enters: []
+        exits: [叔父]
+        duration_min: 8
+        beat: 手紙の宛先が母ではなかったと判明する
+        goal: 世界を反転させ、第三幕への問いを立てる
+        conflict: 知りたいハルカ vs これ以上壊したくないミナト
+        outcome: ミナトが借金のことを口走ってしまう(= PP2)
+        setup: []
+        payoff: [父の借金]
+
+  - act: 3
+    location: 同・居間
+    time: 同日深夜
+    transition: 暗転
+    french_scenes:
+      - fs: "3-1"
+        on_stage: [ミナト]
+        enters: [ミナト]
+        exits: []
+        duration_min: 3
+        beat: ミナト、一人。手紙の束を前に迷う
+      - fs: "3-2"
+        on_stage: [ハルカ, ミナト]
+        enters: [ハルカ]
+        exits: []
+        duration_min: 8
+        beat: ハルカが手紙を燃やし、初めて本音で対峙する
+        goal: 劇的な問い「この家族は互いを赦せるか」に回答する
+        conflict: 過去を保存したいミナト vs 過去を手放したいハルカ
+        outcome: 手紙は燃え、二人は初めて目を合わせる
+        payoff: [父の手紙]
+      - fs: "3-3"
+        on_stage: [ハルカ, ミナト]
+        enters: []
+        exits: []
+        time_jump: true      # 出入りではなく時間経過(照明転換)による区切り。
+                             # enters/exits 空チェックの例外になる
+        duration_min: 4
+        beat: 朝。売却の書類に二人で判を押す(レゾリューション)
